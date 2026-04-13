@@ -1,0 +1,2 @@
+# This file keeps the outputs/ directory tracked by git.
+# Actual .png plots are gitignored — run `python main.py` to regenerate them.

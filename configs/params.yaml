@@ -1,0 +1,104 @@
+# PID Simulator Configuration
+# ----------------------------
+# Edit these values to tune the controller and system parameters.
+# Run main.py to regenerate all plots.
+
+# ── Water Tank Scenario ──────────────────────────────────────────────────────
+water_tank:
+  system:
+    area: 1.0              # Tank cross-section area (m²)
+    discharge_coeff: 0.5   # Gravity drain coefficient
+    initial_level: 0.0     # Starting water level (m)
+
+  simulation:
+    duration: 60.0         # Total simulation time (seconds)
+    dt: 0.05               # Time step (seconds)
+    setpoint: 2.0          # Target water level (m)
+    disturbance_time: 40.0 # When to inject disturbance (seconds)
+    disturbance_magnitude: -0.8  # Sudden drop in level (m)
+
+  # Tuning configurations — add more to compare
+  tuning_configs:
+    - label: "P-only (sluggish)"
+      Kp: 0.5
+      Ki: 0.0
+      Kd: 0.0
+
+    - label: "Under-damped (oscillates)"
+      Kp: 2.5
+      Ki: 0.5
+      Kd: 0.0
+
+    - label: "Well-tuned (Kd helps)"
+      Kp: 1.8
+      Ki: 0.4
+      Kd: 0.8
+
+    - label: "Aggressive (fast, small overshoot)"
+      Kp: 3.0
+      Ki: 0.8
+      Kd: 1.5
+
+
+# ── Thermal Room Scenario ────────────────────────────────────────────────────
+thermal_room:
+  system:
+    thermal_capacity: 5000.0  # J/°C
+    heat_loss_coeff: 50.0     # W/°C
+    outside_temp: 5.0         # °C
+    initial_temp: 5.0         # °C
+
+  simulation:
+    duration: 300.0            # seconds
+    dt: 0.5
+    setpoint: 22.0             # Target room temp (°C)
+    disturbance_time: 200.0
+    disturbance_magnitude: -4.0  # Sudden window-open cold gust
+
+  tuning_configs:
+    - label: "Slow PI (no overshoot)"
+      Kp: 10.0
+      Ki: 0.05
+      Kd: 0.0
+
+    - label: "PID (balanced)"
+      Kp: 20.0
+      Ki: 0.1
+      Kd: 5.0
+
+    - label: "Aggressive PID"
+      Kp: 40.0
+      Ki: 0.3
+      Kd: 15.0
+
+
+# ── DC Motor Scenario ────────────────────────────────────────────────────────
+dc_motor:
+  system:
+    J: 0.01     # Rotor inertia (kg·m²)
+    B: 0.1      # Friction (N·m·s/rad)
+    K_t: 0.5    # Torque constant
+    K_e: 0.5    # Back-EMF constant
+    R: 1.0      # Armature resistance (Ω)
+    initial_speed: 0.0  # rad/s
+
+  simulation:
+    duration: 5.0
+    dt: 0.005
+    setpoint: 100.0   # Target speed (rad/s)
+
+  tuning_configs:
+    - label: "Under-tuned"
+      Kp: 0.5
+      Ki: 0.1
+      Kd: 0.0
+
+    - label: "Well-tuned"
+      Kp: 2.0
+      Ki: 0.5
+      Kd: 0.05
+
+    - label: "Over-damped"
+      Kp: 5.0
+      Ki: 2.0
+      Kd: 0.2
